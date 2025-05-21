@@ -1,6 +1,7 @@
 package com.user.demo.service;
 import com.user.demo.model.Users;
 import com.user.demo.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -27,7 +28,32 @@ import java.util.List;
         @Override
         public Users getUserById(Long id) {
             return usersRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));
         }
+
+        @Override
+        public void deleteUser(Long id) {
+            if (!usersRepository.existsById(id)) {
+                throw new EntityNotFoundException("User not found with ID: " + id);
+            }
+            usersRepository.deleteById(id);
+        }
+
+        @Override
+        public void deleteAllUsers() {
+            usersRepository.deleteAll();
+        }
+
+        @Override
+        public void updateUser(Users updatedUser) {
+            Users existingUser = usersRepository.findById(updatedUser.getId())
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + updatedUser.getId()));
+
+            // Update fields as needed
+            existingUser.setName(updatedUser.getName());
+
+            usersRepository.save(existingUser);
+        }
+
 
     }
