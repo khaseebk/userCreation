@@ -7,4 +7,7 @@ public interface UsersService {
     List<Users> getAllUsers();
     Users createUser(Users user);
     Users getUserById(Long id);
+    void deleteUser(Long id);
+    void deleteAllUsers();
+    void updateUser(Users updatedUser);
 }
